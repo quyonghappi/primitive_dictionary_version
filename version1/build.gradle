@@ -1,0 +1,52 @@
+/*plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}*/
+
+plugins {
+    id("application")
+    id("org.openjfx.javafxplugin") version "0.0.13" // JavaFX plugin
+    id("java")
+}
+
+group = "org.example"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.openjfx:javafx-controls:22.0.2") // JavaFX version, adjust if needed
+    implementation("org.openjfx:javafx-fxml:22.0.2")    // Only include if you're using FXML
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+javafx {
+    version = "22.0.2" // Adjust to your JavaFX version
+    modules = ["javafx.controls", "javafx.fxml"] // Add more modules if needed
+}
+
+application {
+    mainClass.set("org.example.Main")  // Update with your actual main class path
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
