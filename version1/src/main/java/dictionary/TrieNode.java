@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TrieNode {
-    private Map<Character, TrieNode> children; // Con trỏ đến các nút con
-    private boolean isEndOfWord; // Đánh dấu kết thúc của từ
-    private String definition; // Nghĩa của từ (nếu cần)
-    private String pronunciation; // Cách phát âm (nếu cần)
+    private Map<Character, TrieNode> children; //Con trỏ đến các nút con
+    private boolean isEndOfWord; //Đánh dấu kết thúc của từ
+    private String definition;
+    private String pronunciation;
 
     public TrieNode() {
         this.children = new HashMap<>();
