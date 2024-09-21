@@ -27,5 +27,43 @@ public class Dictionary {
         show.setTrie(trie); // Cung cấp Trie cho DictionaryManagement
         show.showAllWords(); // Hiển thị tất cả các từ
     }
+
+    public void importFromFile() {
+        DictionaryManagement management = new DictionaryManagement();
+        management.setTrie(trie);
+        management.insertFromFile();
+    }
+
+    public void lookUpWord() {
+        DictionaryManagement management = new DictionaryManagement();
+        management.setTrie(trie);
+        management.dictionaryLookup();
+    }
+
+    public void deleteWord() {
+        DictionaryManagement management = new DictionaryManagement();
+        management.setTrie(trie);
+        management.deleteWord();
+
+    }
+
+    public void editWord() {
+        DictionaryManagement management = new DictionaryManagement();
+        management.setTrie(trie);
+        management.editWord();
+    }
+
+    public void searchByPrefix() {
+        DictionaryCommandline tool = new DictionaryCommandline();
+        tool.dictionarySearcher();
+    }
+
+    public void exportToFile() {
+        DictionaryCommandline tool = new DictionaryCommandline();
+        tool.setTrie(trie);
+        tool.exportToFile();
+    }
+
+
     }
 
