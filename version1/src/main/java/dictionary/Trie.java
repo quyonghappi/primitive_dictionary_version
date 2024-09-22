@@ -11,31 +11,8 @@ public class Trie {
         root = new TrieNode();
     }
 
-    // Thêm từ vào Trie, sau nay co the insert pronunciation,...
-    public void insert(String word, String definition) {
-        TrieNode node = root;
-        for (char c : word.toCharArray()) {
-            node = node.getChildren().computeIfAbsent(c, k -> new TrieNode());
-        }
-        node.setEndOfWord(true);
-        node.setDefinition(definition);
-        //node.setPronunciation(pronunciation);
-    }
-
-    // Tìm kiếm từ trong Trie
-    public TrieNode search(String word) {
-        TrieNode node = root;
-        for (char c : word.toCharArray()) {
-            node = node.getChildren().get(c);
-            if (node == null) {
-                return null;
-            }
-        }
-        return node.isEndOfWord() ? node : null;
-    }
-
-    //find the meaning of word
-    public String searchMeaning(String word) {
+    //search word in trie, return node
+    public TrieNode search1(String word) {
         TrieNode node = root;
         for (char c : word.toCharArray()) {
             node = node.getChildren().get(c);
@@ -43,22 +20,49 @@ public class Trie {
                 return null; // Word not found
             }
         }
-        return node.isEndOfWord() ? node.getDefinition() : null; // Return meaning if the word is valid
+        return node; // Return the TrieNode at the end of the term
+    }
+    //Search for a word in the Trie and return the Word object
+    public Word search2(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            node = node.getChildren().get(c);
+            if (node == null) {
+                return null; // Word not found
+            }
+        }
+        return node.isEndOfWord() ? node.getWord() : null; // Return Word if it exists
     }
 
-    //Tìm kiếm theo tiền tố
-    public List<String> autocomplete(String prefix) {
-        List<String> results = new ArrayList<>();
-        TrieNode node = search(prefix);
+    // Add a word to the Trie, including its definition
+    public void insert(String term, String definition) {
+        TrieNode node = root;
+        for (char c : term.toCharArray()) {
+            node = node.getChildren().computeIfAbsent(c, k -> new TrieNode());
+        }
+        node.setEndOfWord(true);
+        node.setWord(new Word(term, definition)); // Store Word object
+    }
+
+    // Find the meaning of the word
+    public String searchMeaning(String term) {
+        Word word = search2(term);
+        return word != null ? word.getWord_explain() : null; // Return meaning if the word is valid
+    }
+
+    // Autocomplete suggestions for a prefix
+    public List<Word> autocomplete(String prefix) {
+        List<Word> results = new ArrayList<>();
+        TrieNode node = search1(prefix);
         if (node != null) {
             autocompleteHelper(node, new StringBuilder(prefix), results);
         }
         return results;
     }
 
-    private void autocompleteHelper(TrieNode node, StringBuilder prefix, List<String> results) {
+    private void autocompleteHelper(TrieNode node, StringBuilder prefix, List<Word> results) {
         if (node.isEndOfWord()) {
-            results.add(prefix.toString());
+            results.add(node.getWord()); // Add Word object to results
         }
         for (Map.Entry<Character, TrieNode> entry : node.getChildren().entrySet()) {
             autocompleteHelper(entry.getValue(), prefix.append(entry.getKey()), results);
@@ -66,53 +70,52 @@ public class Trie {
         }
     }
 
-    //delete word
-    public boolean delete(String word) {
-        return delete(root, word, 0);
+    // Delete a word from the Trie
+    public boolean delete(String term) {
+        return delete(root, term, 0);
     }
 
-    private boolean delete(TrieNode currentNode, String word, int index) {
-        if (index == word.length()) {
+    private boolean delete(TrieNode currentNode, String term, int index) {
+        if (index == term.length()) {
             if (!currentNode.isEndOfWord()) {
-                return false; //word not found
+                return false; // Word not found
             }
-
             currentNode.setEndOfWord(false);
-            return currentNode.getChildren().isEmpty();
+            return currentNode.getChildren().isEmpty(); // Check if the node can be deleted
         }
 
-        char c = word.charAt(index);
+        char c = term.charAt(index);
         TrieNode node = currentNode.getChildren().get(c);
         if (node == null) {
             return false;
         }
 
-        boolean result = delete(node, word, index + 1);
+        boolean shouldDeleteCurrentNode = delete(node, term, index + 1);
 
-        if (result) {
+        if (shouldDeleteCurrentNode) {
             currentNode.getChildren().remove(c);
             return currentNode.getChildren().isEmpty() && !currentNode.isEndOfWord();
         }
         return false;
     }
 
-    // Tìm kiếm tất cả các từ bắt đầu với prefix
-    public void searchByPrefix(String prefix, List<String> result) {
+    // Search for all words starting with a given prefix
+    public void searchByPrefix(String prefix, List<Word> result) {
         TrieNode node = root;
         for (char c : prefix.toCharArray()) {
             node = node.getChildren().get(c);
             if (node == null) {
-                return; //Nếu không tìm thấy tiền tố thì end
+                return; // If prefix not found, exit
             }
         }
-        //Nếu tìm thấy tiền tố thì tìm từ ở đây
+        //if prefix found, collect all words from here
         collectAllWords(node, prefix, result);
     }
 
-    //thu thập tất cả các từ từ node hiện tại
-    private void collectAllWords(TrieNode node, String prefix, List<String> result) {
+    //recursive function to collect all words from the current node
+    private void collectAllWords(TrieNode node, String prefix, List<Word> result) {
         if (node.isEndOfWord()) {
-            result.add(prefix); //Thêm từ vào danh sách nếu là từ đó end rồi
+            result.add(node.getWord()); //add Word object to the results
         }
         for (char c : node.getChildren().keySet()) {
             collectAllWords(node.getChildren().get(c), prefix + c, result);
@@ -123,4 +126,3 @@ public class Trie {
         return root;
     }
 }
-
