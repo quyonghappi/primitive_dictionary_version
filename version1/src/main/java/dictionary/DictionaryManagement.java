@@ -107,7 +107,7 @@ public class DictionaryManagement {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter word: ");
         String word = sc.nextLine().trim();
-        if (trie.search(word) != null) {
+        if (trie.search1(word) != null) {
             System.out.println("Enter new meaning: ");
             String newMeaning = sc.nextLine().trim();
             trie.insert(word, newMeaning);
@@ -124,7 +124,7 @@ public class DictionaryManagement {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter word: ");
         String word = sc.nextLine().trim();
-        if (trie.search(word) != null) {
+        if (trie.search1(word) != null) {
             trie.delete(word);
             System.out.println("Successfully deleted word: " + word);
         }
