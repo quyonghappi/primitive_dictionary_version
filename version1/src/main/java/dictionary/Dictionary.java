@@ -12,7 +12,7 @@ public class Dictionary {
     }
 
     public String searchWord(String word) {
-        TrieNode node = trie.search(word); // Tìm kiếm từ trong Trie
+        TrieNode node = trie.search1(word);
         return (node != null && node.isEndOfWord()) ? node.getDefinition() : "Word not found.";
     }
 
